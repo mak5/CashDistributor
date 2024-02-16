@@ -1,29 +1,26 @@
 ﻿
+
 namespace CashDustributor.Tests.Unit;
 
-internal class CashDistributorProccessor
+internal class CashDistributorProccessor()
 {
-    public CashDistributorProccessor(int cash)
-    {
-        if (cash % 5 != 0)
-        {
-            throw new ArgumentException("cash should be multiple of five", nameof(cash));
-        }
+    public int CashAmount => _bankNotes.Sum(x => x.Value);
+    public IReadOnlyCollection<BaseBankNote> BankNotes => _bankNotes.AsReadOnly();
+    private List<BaseBankNote> _bankNotes = [];
 
-        Cash = cash;
+    public void AddBanknotes(BaseBankNote bankNote, int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            _bankNotes.Add(bankNote);
+        }
     }
 
-    public int Cash { get; internal set; }
-
-    public void AddCash(int cashToAdd)
+    public void RemoveBanknotes(List<BaseBankNote> bankNotesToRemove)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cashToAdd);
-
-        if (cashToAdd % 5 != 0)
+        foreach (var bankNote in bankNotesToRemove)
         {
-            throw new ArgumentException("cash should be multiple of five", nameof(cashToAdd));
+            _bankNotes.Remove(bankNote);
         }
-
-        Cash += cashToAdd;
     }
 }
