@@ -2,14 +2,10 @@ namespace CashDustributor.Tests.Unit
 {
     public class CashDistributorProccessorTests
     {
-        private int _cashToAdd;
-        private int _existingCash;
         private readonly CashDistributorProccessor _distributor;
 
         public CashDistributorProccessorTests()
         {
-            _cashToAdd = 1000;
-            _existingCash = 10000;
             _distributor = new CashDistributorProccessor();
         }
 
@@ -17,17 +13,17 @@ namespace CashDustributor.Tests.Unit
         public void Should_IncreaseBanknotesStockForEachType_When_AddBanknotesGetCalled()
         {
             // Arrange
-            var fives = new FiveDinnars();
-            var tens = new TenDinnars();
+            var five = new FiveDinnars();
+            var ten = new TenDinnars();
 
             // Act
-            _distributor.AddBanknotes(fives, 10);
-            _distributor.AddBanknotes(tens, 5);
+            _distributor.AddBanknotes(five, 10);
+            _distributor.AddBanknotes(ten, 5);
 
-            Assert.NotNull(fives);
-            Assert.NotNull(tens);
-            Assert.True(fives.Value == 5);
-            Assert.True(tens.Value == 10);
+            Assert.NotNull(five);
+            Assert.NotNull(ten);
+            Assert.True(five.Value == 5);
+            Assert.True(ten.Value == 10);
             Assert.True(_distributor.BankNotes.Count == 15);
             Assert.True(_distributor.BankNotes.Count(x => x is FiveDinnars) == 10);
             Assert.True(_distributor.BankNotes.Count(x => x is TenDinnars) == 5);
@@ -39,10 +35,10 @@ namespace CashDustributor.Tests.Unit
         {
             // Arrange
             var bankNotesToRemove = new List<BaseBankNote> { new FiveDinnars(), new TenDinnars() };
-            var fives = new FiveDinnars();
-            var tens = new TenDinnars();
-            _distributor.AddBanknotes(fives, 10);
-            _distributor.AddBanknotes(tens, 5);
+            var five = new FiveDinnars();
+            var ten = new TenDinnars();
+            _distributor.AddBanknotes(five, 10);
+            _distributor.AddBanknotes(ten, 5);
 
             // Act
             _distributor.RemoveBanknotes(bankNotesToRemove);
@@ -50,6 +46,21 @@ namespace CashDustributor.Tests.Unit
             Assert.True(_distributor.BankNotes.Count == 13);
             Assert.True(_distributor.BankNotes.Count(x => x is FiveDinnars) == 9);
             Assert.True(_distributor.BankNotes.Count(x => x is TenDinnars) == 4);
+        }
+
+        [Fact]
+        public void Should_HaveCorrect_CashAmount_When_BankNotesAdded()
+        {
+            // Arrange
+            var five = new FiveDinnars();
+            var ten = new TenDinnars();
+
+            // Act
+            _distributor.AddBanknotes(five, 1);
+            _distributor.AddBanknotes(ten, 2);
+
+            // Assert
+            Assert.Equal(25, _distributor.CashAmount);
         }
     }
 }

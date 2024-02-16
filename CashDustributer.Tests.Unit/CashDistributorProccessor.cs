@@ -1,27 +1,26 @@
 ﻿
+
 namespace CashDustributor.Tests.Unit;
 
 internal class CashDistributorProccessor()
 {
-    public int Cash => _bankNotes.Sum(x => x.Value);
-
-    private readonly List<BaseBankNote> _bankNotes = new();
-
+    public int CashAmount => _bankNotes.Sum(x => x.Value);
     public IReadOnlyCollection<BaseBankNote> BankNotes => _bankNotes.AsReadOnly();
+    private List<BaseBankNote> _bankNotes = [];
 
-    internal void AddBanknotes(BaseBankNote bankNoteToAdd, int count)
+    public void AddBanknotes(BaseBankNote bankNote, int count)
     {
         for (int i = 0; i < count; i++)
         {
-            _bankNotes.Add(bankNoteToAdd);
+            _bankNotes.Add(bankNote);
         }
     }
 
-    internal void RemoveBanknotes(List<BaseBankNote> bankNotesToRemove)
+    public void RemoveBanknotes(List<BaseBankNote> bankNotesToRemove)
     {
-        foreach (var item in bankNotesToRemove)
+        foreach (var bankNote in bankNotesToRemove)
         {
-            _bankNotes.Remove(item);
+            _bankNotes.Remove(bankNote);
         }
     }
 }

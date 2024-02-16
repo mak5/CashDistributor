@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CashDustributor.Tests.Unit
 {
-    internal class BaseBankNote(int value) : IEquatable<BaseBankNote>
+    internal abstract class BaseBankNote(int value) : IEquatable<BaseBankNote>
     {
         public virtual int Value { get; } = value;
 
@@ -40,11 +40,6 @@ namespace CashDustributor.Tests.Unit
         public static bool operator !=(BaseBankNote left, BaseBankNote right)
         {
             return !(left == right);
-        }
-
-        public static BaseBankNote operator +(BaseBankNote left, BaseBankNote right)
-        {
-            return new BaseBankNote(left.Value + right.Value);
         }
     }
 }
