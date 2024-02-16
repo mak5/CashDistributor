@@ -3,56 +3,53 @@ namespace CashDustributor.Tests.Unit
     public class CashDistributorProccessorTests
     {
         private int _cashToAdd;
+        private int _existingCash;
+        private readonly CashDistributorProccessor _distributor;
 
         public CashDistributorProccessorTests()
         {
             _cashToAdd = 1000;
+            _existingCash = 10000;
+            _distributor = new CashDistributorProccessor();
         }
 
         [Fact]
-        public void Should_CreateAnInstanceAndSetProperties_When_ParametersPassedToContructor()
+        public void Should_IncreaseBanknotesStockForEachType_When_AddBanknotesGetCalled()
         {
             // Arrange
-            var cash = 10000;
-            CashDistributorProccessor distributor;
+            var fives = new FiveDinnars();
+            var tens = new TenDinnars();
 
             // Act
-            distributor = new CashDistributorProccessor(cash);
+            _distributor.AddBanknotes(fives, 10);
+            _distributor.AddBanknotes(tens, 5);
 
-            // Assert
-            Assert.NotNull(distributor);
-            Assert.Equal(cash, distributor.Cash);
+            Assert.NotNull(fives);
+            Assert.NotNull(tens);
+            Assert.True(fives.Value == 5);
+            Assert.True(tens.Value == 10);
+            Assert.True(_distributor.BankNotes.Count == 15);
+            Assert.True(_distributor.BankNotes.Count(x => x is FiveDinnars) == 10);
+            Assert.True(_distributor.BankNotes.Count(x => x is TenDinnars) == 5);
+
         }
 
         [Fact]
-        public void Should_IncreaseCash_When_AddCachMethodGetCalled()
+        public void Should_DecreaseBanknotesStockForEachType_When_RemoveBanknotesGetCalled()
         {
             // Arrange
-            var existingCash = 10000;
-            var expectedResult = 11000;
-            var distributor = new CashDistributorProccessor(existingCash);
+            var bankNotesToRemove = new List<BaseBankNote> { new FiveDinnars(), new TenDinnars() };
+            var fives = new FiveDinnars();
+            var tens = new TenDinnars();
+            _distributor.AddBanknotes(fives, 10);
+            _distributor.AddBanknotes(tens, 5);
 
             // Act
-            distributor.AddCash(_cashToAdd);
+            _distributor.RemoveBanknotes(bankNotesToRemove);
 
-            // Assert
-            Assert.Equal(expectedResult, distributor.Cash);
-        }
-
-        [Fact]
-        public void Should_ThrowsException_When_CashToAddIsNegativeOrZero()
-        {
-            // Arrange
-            var existingCash = 10000;
-            _cashToAdd = -1;
-            var distributor = new CashDistributorProccessor(existingCash);
-
-            // Act
-            Action act = () => distributor.AddCash(_cashToAdd);
-
-            // Assert
-            var ex = Assert.Throws<ArgumentOutOfRangeException>(act);
-            Assert.Equal("cashToAdd", ex.ParamName);
+            Assert.True(_distributor.BankNotes.Count == 13);
+            Assert.True(_distributor.BankNotes.Count(x => x is FiveDinnars) == 9);
+            Assert.True(_distributor.BankNotes.Count(x => x is TenDinnars) == 4);
         }
     }
 }

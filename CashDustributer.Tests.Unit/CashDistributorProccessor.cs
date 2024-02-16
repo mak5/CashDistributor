@@ -1,14 +1,27 @@
 ﻿
 namespace CashDustributor.Tests.Unit;
 
-internal class CashDistributorProccessor(int cash)
+internal class CashDistributorProccessor()
 {
-    public int Cash { get; internal set; } = cash;
+    public int Cash => _bankNotes.Sum(x => x.Value);
 
-    public void AddCash(int cashToAdd)
+    private readonly List<BaseBankNote> _bankNotes = new();
+
+    public IReadOnlyCollection<BaseBankNote> BankNotes => _bankNotes.AsReadOnly();
+
+    internal void AddBanknotes(BaseBankNote bankNoteToAdd, int count)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cashToAdd);
+        for (int i = 0; i < count; i++)
+        {
+            _bankNotes.Add(bankNoteToAdd);
+        }
+    }
 
-        Cash += cashToAdd;
+    internal void RemoveBanknotes(List<BaseBankNote> bankNotesToRemove)
+    {
+        foreach (var item in bankNotesToRemove)
+        {
+            _bankNotes.Remove(item);
+        }
     }
 }
